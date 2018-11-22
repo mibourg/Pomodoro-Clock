@@ -1,0 +1,207 @@
+class Application extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    return (
+      <PomodoroClock />
+    );
+  }
+}
+
+class PomodoroClock extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      timerID: "",
+      running: false,
+      currentlySession: true,
+      breakLength: 300000,
+      sessionLength: 1500000,
+      timeLeft: 1500000
+    }
+    this.decrementBreakLength = this.decrementBreakLength.bind(this);
+    this.incrementBreakLength = this.incrementBreakLength.bind(this);
+    this.decrementSessionLength = this.decrementSessionLength.bind(this);
+    this.incrementSessionLength = this.incrementSessionLength.bind(this);
+    this.decrementTimeLeft = this.decrementTimeLeft.bind(this);
+    this.startStop = this.startStop.bind(this);
+    this.reset = this.reset.bind(this);
+  }
+  turnMilliIntoMinAndSec(milli) {
+    return (("0" + Math.floor(milli/1000/60)).slice(-2) + ":" + ("0" + Math.floor(milli/1000%60)).slice(-2));
+  }
+  milliToMin(milli) {
+    return milli/1000/60;
+  }
+  startStop(e) {
+    if (this.state.running) {
+      this.setState({
+        timerID: this.state.timerID,
+        running: false,
+        currentlySession: this.state.currentlySession,
+        breakLength: this.state.breakLength,
+        sessionLength: this.state.sessionLength,
+        timeLeft: this.state.timeLeft
+      });
+    } else {
+      this.setState({
+        timerID: this.state.timerID,
+        running: true,
+        currentlySession: this.state.currentlySession,
+        breakLength: this.state.breakLength,
+        sessionLength: this.state.sessionLength,
+        timeLeft: this.state.timeLeft
+      });
+    }
+  }
+  reset(e) {
+    document.getElementById("beep").pause();
+    document.getElementById("beep").currentTime = 0;
+    this.setState({
+      timerID: this.state.timerID,
+      running: false,
+      currentlySession: true,
+      breakLength: 300000,
+      sessionLength: 1500000,
+      timeLeft: 1500000
+    });
+  }
+  decrementBreakLength(e) {
+    if (this.state.breakLength > 60000) {
+      this.setState({
+        timerID: this.state.timerID,
+        running: this.state.running,
+        currentlySession: this.state.currentlySession,
+        breakLength: this.state.breakLength - 60000,
+        sessionLength: this.state.sessionLength,
+        timeLeft: this.state.timeLeft
+      });
+    }
+  }
+  incrementBreakLength(e) {
+    if (this.state.breakLength < 3600000) {
+      this.setState({
+        timerID: this.state.timerID,
+        running: this.state.running,
+        currentlySession: this.state.currentlySession,
+        breakLength: this.state.breakLength + 60000,
+        sessionLength: this.state.sessionLength,
+        timeLeft: this.state.timeLeft
+      });
+    }
+  }
+  decrementSessionLength(e) {
+    if (this.state.sessionLength > 60000) {
+      this.setState({
+        timerID: this.state.timerID,
+        running: this.state.running,
+        currentlySession: this.state.currentlySession,
+        breakLength: this.state.breakLength,
+        sessionLength: this.state.sessionLength - 60000,
+        timeLeft: this.state.timeLeft - 60000
+      });
+    }
+  }
+  incrementSessionLength(e) {
+    if (this.state.sessionLength < 3600000) {
+      this.setState({
+        timerID: this.state.timerID,
+        running: this.state.running,
+        currentlySession: this.state.currentlySession,
+        breakLength: this.state.breakLength,
+        sessionLength: this.state.sessionLength + 60000,
+        timeLeft: this.state.timeLeft + 60000
+      });
+    }
+  }
+  decrementTimeLeft(e) {
+    this.setState({
+      timerID: this.state.timerID,
+      running: this.state.running,
+      currentlySession: this.state.currentlySession,
+      breakLength: this.state.breakLength,
+      sessionLength: this.state.sessionLength,
+      timeLeft: this.state.timeLeft - 20
+    });
+  }
+  render() {
+    if (this.state.timeLeft === 0 && this.state.currentlySession) {
+      document.getElementById("beep").play();
+      this.setState({
+        timerID: this.state.timerID,
+        running: this.state.running,
+        currentlySession: false,
+        breakLength: this.state.breakLength,
+        sessionLength: this.state.sessionLength,
+        timeLeft: this.state.breakLength
+      });
+    } else if (this.state.timeLeft === 0 && !this.state.currentlySession) {
+      document.getElementById("beep").play();
+      this.setState({
+        timerID: this.state.timerID,
+        running: this.state.running,
+        currentlySession: true,
+        breakLength: this.state.breakLength,
+        sessionLength: this.state.sessionLength,
+        timeLeft: this.state.sessionLength
+      });
+    }
+    if (this.state.running && this.state.timerID === "") {
+      let id = setInterval(this.decrementTimeLeft, 20);
+      this.setState({
+        timerID: id,
+        running: this.state.running,
+        currentlySession: this.state.currentlySession,
+        breakLength: this.state.breakLength,
+        sessionLength: this.state.sessionLength,
+        timeLeft: this.state.timeLeft
+      });
+    } else if (!this.state.running && this.state.timerID !== "") {
+      clearInterval(this.state.timerID);
+      this.setState({
+        timerID: "",
+        running: this.state.running,
+        currentlySession: this.state.currentlySession,
+        breakLength: this.state.breakLength,
+        sessionLength: this.state.sessionLength,
+        timeLeft: this.state.timeLeft
+      });
+    }
+    return (
+      <div id="pomodoro-clock">
+        <div id="inner-clock-items">
+          <div id="timer">
+            <div id="time-left">{this.turnMilliIntoMinAndSec(this.state.timeLeft)}</div>
+            <div id="timer-label">{this.state.currentlySession ? "Session" : "Break"}</div>
+          </div>
+          <div id="timer-btns">
+            <div id="start_stop" onClick={this.startStop}>{this.state.running ? (<i class="fas fa-pause"/>) : (<i class="fas fa-play"/>)}</div>
+            <div id="reset" onClick={this.reset}><i class="fa fa-refresh" aria-hidden="true"></i></div>
+          </div>
+          <div id="length-stuff">
+            <div id="break">
+              <div id="break-label">Break Length</div>
+              <div id="break-length-btns">
+                <div class="decrement-btn" id="break-decrement" onClick={this.decrementBreakLength}>-</div>
+                <div id="break-length">{this.milliToMin(this.state.breakLength)}</div>
+                <div class="increment-btn" id="break-increment" onClick={this.incrementBreakLength}>+</div>
+              </div>
+            </div>
+            <div id="session">
+              <div id="session-label">Session Length </div>
+              <div id="session-length-btns">
+                <div class="decrement-btn" id="session-decrement" onClick={this.decrementSessionLength}>-</div>
+                <div id="session-length">{this.milliToMin(this.state.sessionLength)}</div>
+                <div class="increment-btn" id="session-increment" onClick={this.incrementSessionLength}>+</div>
+              </div>
+            </div>
+          </div>
+          <audio id="beep" src="http://soundbible.com/grab.php?id=1491&type=mp3" />
+        </div>
+      </div>
+    )
+  }
+}
+
+ReactDOM.render(<Application />, document.getElementById("app"));

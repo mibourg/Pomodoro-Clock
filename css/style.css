@@ -1,0 +1,115 @@
+body {
+  margin: 0;
+}
+
+#app {
+  background-color: #74B72E;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#pomodoro-clock {
+  color: #234F1E;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  border-radius: 3%;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.12),
+            0 2px 4px 0 rgba(0,0,0,0.08);
+  width: 50%;
+  height: 80%;
+  border: 1px solid #028A0F;
+}
+
+#inner-clock-items {
+  width: 100%;
+}
+
+#timer {
+  font-family: "Lora";
+  width: 100%;
+  text-align: center;
+}
+
+#time-left {
+  font-size: 6em;
+}
+
+#timer-label {
+  font-size: 1.5em;
+}
+
+#timer-btns {
+  margin-top: 2%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#start_stop {
+  margin-right: 5%;
+}
+
+#reset {
+  margin-left: 5%;
+}
+
+#length-stuff {
+  font-family: "Lora";
+  display: flex;
+  justify-content: space-around;
+}
+
+#break {
+  margin-top: 2%;
+  align-text: center;
+}
+
+#break-label {
+  font-size: 1.5em;
+}
+
+#break-length-btns {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  font-size: 1.5em;
+}
+
+#session {
+  margin-top: 2%;
+  align-text: center;
+}
+
+#session-label {
+  font-size: 1.5em;
+}
+
+#session-length-btns {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  font-size: 1.5em;
+}
+
+@media (max-width: 775px) {
+  #pomodoro-clock {
+    width: 80%;
+  }
+}
+
+@media (max-width: 475px) {
+  #pomodoro-clock {
+    width: 95%;
+    height: 90%;
+  }
+}
+
+@media (min-height: 500px) {
+  #pomodoro-clock {
+    height: 60%;
+  }
+}
